@@ -1,0 +1,1 @@
+Provide a domain and this lambda will crawl through all the associated links looking for email addresses

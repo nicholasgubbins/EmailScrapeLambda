@@ -1,7 +1,7 @@
 {
-  "name": "easle-mail",
+  "name": "email-scrape-lambda",
   "version": "1.0.0",
-  "description": "Portfolio Email Extractor Lambda",
+  "description": "Email Scraper Lambda",
   "main": "index.js",
   "scripts": {},
   "author": "Nick Gubbins <nick@easle.co>",
