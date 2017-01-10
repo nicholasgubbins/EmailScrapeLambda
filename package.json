@@ -1,0 +1,21 @@
+{
+  "name": "easle-mail",
+  "version": "1.0.0",
+  "description": "Portfolio Email Extractor Lambda",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Nick Gubbins <nick@easle.co>",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.3.4",
+    "cheerio": "^0.22.0",
+    "request": "^2.69.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-install": "^0.6.0",
+    "gulp-zip": "^3.2.0",
+    "merge-stream": "^1.0.0"
+  }
+}
