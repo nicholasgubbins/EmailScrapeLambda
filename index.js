@@ -3,18 +3,19 @@ var request = Promise.promisify(require('request'));
 var url = require('url');
 var cheerio = require('cheerio');
 
-function getLinksOnPage(url){
-	return request(url, {headers:{'User-Agent':'curl/7.51.0'}})
+function getLinksOnPage(address){
+	var parsed_url = url.parse(address);
+	var base = parsed_url.protocol + '//' + parsed_url.hostname;
+	return request(base, {headers:{'User-Agent':'curl/7.51.0'}})
 	.then(function(response){
 		$ = cheerio.load(response.body);
 	  	links = $('a'); // jquery get all hyperlinks
-	  	var to_return = [];
+	  	var to_return = [address, base];
 	  	$(links).each(function(i, link){
 			var href = $(link).attr('href');
-	    	var base = (url[url.length - 1] == '/') ? url.substring(0, url.length-1) : url;
 	    	if (!href) return
-	    	if (href && href[0] == '/') to_return.push(base + href);
-	    	else if (href.indexOf(base) > -1 && (href !== base && href !== url)) to_return.push(href);
+	    	if (href && href[0] == '/' && to_return.indexOf(url.resolve(base, href)) == -1) to_return.push(url.resolve(base, href));
+	    	else if (href.indexOf(base) > -1 && (href !== base && href !== address) && to_return.indexOf(href) == -1 ) to_return.push(href);
 		});
 		return to_return;
 	})
@@ -44,9 +45,10 @@ function getEmailsFromPage(link){
 
 var handler = exports.handler = function(event, context){
 	var emails = [];
+	var links_searched = 0;
 	getLinksOnPage(event.link)
 	.then(function(links){
-		console.log(links.length, 'links');
+		links_searched = links.length;
 		return links;
 	})
 	.map(function(link){
@@ -60,13 +62,10 @@ var handler = exports.handler = function(event, context){
 		})
 	})
 	.then(function(){
-		console.log(emails);
-		context.succeed(emails);
+		context.succeed({emails:emails, links_searched:links_searched});
 	})
 	.catch(function(e){
 		console.log(e);
 		context.fail(e);
 	})
 }
-
-
